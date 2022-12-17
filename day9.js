@@ -9,7 +9,7 @@ async function loadFile(filename) {
 
 async function main() {
 	const input = await loadFile("day9.txt");
-	const rope = new Rope();
+	const rope = new Rope(10);
 	const positions = new Set();
 	for (const movement of input) {
 		applyInput(rope, movement, positions);
@@ -32,7 +32,7 @@ function applyInput(rope, movementInput, positionSet) {
 
 	for (let i = 0; i < count; i++) {
 		rope.move(direction);
-		positionSet.add(rope.tail.toString());
+		positionSet.add(rope.getTail().toString());
 	}
 }
 
@@ -55,8 +55,20 @@ class Coordinate {
 }
 
 class Rope {
-	head = new Coordinate();
-	tail = new Coordinate();
+	knots = [];
+	// head = new Coordinate();
+	// tail = new Coordinate();
+
+	constructor(length = 2) {
+		this.knots = Array.from(
+			new Array(length).fill(0),
+			() => new Coordinate()
+		);
+	}
+
+	getTail() {
+		return this.knots[this.knots.length - 1];
+	}
 
 	/**
 	 * Which direction to move. Up increses x, right increases y
@@ -66,23 +78,25 @@ class Rope {
 	move(direction) {
 		switch (direction) {
 			case "U":
-				this.head.x += 1;
+				this.knots[0].x += 1;
 				break;
 			case "D":
-				this.head.x -= 1;
+				this.knots[0].x -= 1;
 				break;
 			case "R":
-				this.head.y += 1;
+				this.knots[0].y += 1;
 				break;
 			case "L":
-				this.head.y -= 1;
+				this.knots[0].y -= 1;
 				break;
 		}
-		this.pullTail();
+		for (let i = 0; i < this.knots.length - 1; i++) {
+			this.pullTail(this.knots[i], this.knots[i + 1]);
+		}
 	}
 
-	pullTail() {
-		const diff = this.tail.distance(this.head);
+	pullTail(head, tail) {
+		const diff = tail.distance(head);
 
 		if (
 			diff.getManhattanLength() < 2 || // adjacent
@@ -91,7 +105,7 @@ class Rope {
 			return;
 		}
 
-		this.tail.x -= Math.sign(diff.x);
-		this.tail.y -= Math.sign(diff.y);
+		tail.x -= Math.sign(diff.x);
+		tail.y -= Math.sign(diff.y);
 	}
 }
