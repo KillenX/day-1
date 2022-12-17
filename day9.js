@@ -8,7 +8,7 @@ async function loadFile(filename) {
 }
 
 async function main() {
-	const input = await loadFile("day9test.txt");
+	const input = await loadFile("day9.txt");
 	const rope = new Rope();
 	const positions = new Set();
 	for (const movement of input) {
@@ -26,12 +26,12 @@ main();
  * @param {Set<string>} positionSet
  */
 function applyInput(rope, movementInput, positionSet) {
-	let [_, direction, count] = movementInput.match(/. [0-9]+/);
+	const movementRegex = /([A-Z]) ([0-9]+)/;
+	let [_, direction, count] = movementInput.match(movementRegex);
 	count = Number.parseInt(count);
 
 	for (let i = 0; i < count; i++) {
 		rope.move(direction);
-		// positionSet.add(rope.head.toString());
 		positionSet.add(rope.tail.toString());
 	}
 }
@@ -91,26 +91,7 @@ class Rope {
 			return;
 		}
 
-		this.tail.x += Math.sign(diff.x);
-		this.tail.y += Math.sign(diff.y);
-		// switch (diff.getManhattanLength()) {
-		// 	case 0:
-		// 		return;
-		// 	case 1:
-		// 		return;
-		// 	case 2:
-		// 		if (Math.abs(diff.x) === Math.abs(diff.y)) {
-		// 			// They are diagonal
-		// 			return;
-		// 		} else {
-		// 			this.tail.x += Math.sign(diff.x);
-		// 			this.tail.y += Math.sign(diff.y);
-		// 		}
-		// 		return;
-		// 	case 3: // Always move one step diagonally
-		// 		this.tail.x += Math.sign(diff.x);
-		// 		this.tail.y += Math.sign(diff.y);
-		// 		return;
-		// }
+		this.tail.x -= Math.sign(diff.x);
+		this.tail.y -= Math.sign(diff.y);
 	}
 }
