@@ -56,8 +56,6 @@ class Coordinate {
 
 class Rope {
 	knots = [];
-	// head = new Coordinate();
-	// tail = new Coordinate();
 
 	constructor(length = 2) {
 		this.knots = Array.from(
@@ -96,16 +94,21 @@ class Rope {
 	}
 
 	pullTail(head, tail) {
-		const diff = tail.distance(head);
+		const diff = head.distance(tail);
 
 		if (
 			diff.getManhattanLength() < 2 || // adjacent
-			Math.abs(diff.x) === Math.abs(diff.y) // diagonally adjacent
+			(Math.abs(diff.x) === 1 && Math.abs(diff.y) === 1) // diagonally adjacent
 		) {
 			return;
 		}
 
-		tail.x -= Math.sign(diff.x);
-		tail.y -= Math.sign(diff.y);
+		tail.x += Math.sign(diff.x);
+		tail.y += Math.sign(diff.y);
+
+		// Since in the long rope there can be cases of
+		if (diff.getManhattanLength() > 3) {
+			this.pullTail(head, tail);
+		}
 	}
 }
