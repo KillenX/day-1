@@ -89,6 +89,7 @@ class Monkey {
 	inspect() {
 		this.inspectionCount += 1;
 		let itemWorryLevel = this.items.shift();
+		// Taking a modulus of the least common divisor does not affect divisibility with any of the monkeys
 		itemWorryLevel = this.operation(itemWorryLevel) % this.lcm;
 		if (this.test(itemWorryLevel)) {
 			this.monkeyPack[this.trueMonkey].giveItem(itemWorryLevel);
