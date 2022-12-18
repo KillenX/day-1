@@ -26,7 +26,8 @@ function doRound(pack) {
 }
 
 class Monkey {
-	lcm = 9699690;
+	// Common multiple for the monkey tests
+	static lcm = 1;
 	items = [];
 	operation;
 	monkeyPack;
@@ -46,6 +47,7 @@ class Monkey {
 		const testRegex = /divisible by ([0-9, ]+)/;
 		const [__, divisible] = monkeyInput.match(testRegex);
 		const divider = Number.parseInt(divisible);
+		Monkey.lcm *= divider;
 		this.test = (worryLevel) => worryLevel % divider === 0;
 
 		const trueTargetRegex = /If true: throw to monkey ([0-9])/;
@@ -89,8 +91,8 @@ class Monkey {
 	inspect() {
 		this.inspectionCount += 1;
 		let itemWorryLevel = this.items.shift();
-		// Taking a modulus of the least common divisor does not affect divisibility with any of the monkeys
-		itemWorryLevel = this.operation(itemWorryLevel) % this.lcm;
+		// Taking a modulus of the least common multiple does not affect divisibility with any of the monkeys
+		itemWorryLevel = this.operation(itemWorryLevel) % Monkey.lcm;
 		if (this.test(itemWorryLevel)) {
 			this.monkeyPack[this.trueMonkey].giveItem(itemWorryLevel);
 		} else {
