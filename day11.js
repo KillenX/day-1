@@ -9,7 +9,7 @@ async function main() {
 	const monkeySetup = input.split("\nMonkey");
 	const pack = monkeySetup.map((monkeyInput) => new Monkey(monkeyInput));
 	pack.forEach((monkey) => monkey.setPack(pack));
-	for (let i = 0; i < 20; i++) {
+	for (let i = 0; i < 10000; i++) {
 		doRound(pack);
 	}
 
@@ -26,6 +26,7 @@ function doRound(pack) {
 }
 
 class Monkey {
+	lcm = 9699690;
 	items = [];
 	operation;
 	monkeyPack;
@@ -88,7 +89,7 @@ class Monkey {
 	inspect() {
 		this.inspectionCount += 1;
 		let itemWorryLevel = this.items.shift();
-		itemWorryLevel = Math.floor(this.operation(itemWorryLevel) / 3);
+		itemWorryLevel = this.operation(itemWorryLevel) % this.lcm;
 		if (this.test(itemWorryLevel)) {
 			this.monkeyPack[this.trueMonkey].giveItem(itemWorryLevel);
 		} else {
